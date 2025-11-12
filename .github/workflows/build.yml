@@ -1,0 +1,57 @@
+name: Build Executables
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build EXE
+        run: pyinstaller --onefile --windowed --icon=analise_estelionatos.ico analise_estelionatos.py
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: analise-estelionatos-windows
+          path: dist/*.exe
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build APP
+        run: pyinstaller --onefile --windowed --icon=analise_estelionatos.icns analise_estelionatos.py
+
+      - name: Upload APP
+        uses: actions/upload-artifact@v4
+        with:
+          name: analise-estelionatos-macos
+          path: dist/*
